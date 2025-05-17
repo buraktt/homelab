@@ -1,0 +1,25 @@
+services:
+  server:
+    image: gitea/gitea:latest
+    container_name: gitea
+    restart: always
+    volumes:
+      - ./gitea:/data
+      - /etc/timezone:/etc/timezone
+      - /etc/localtime:/etc/localtime
+    ports:
+      - "3000:3000"
+  gitea-act-runner:
+    image: vegardit/gitea-act-runner:latest
+    container_name: gitea-act-runner
+    user: 0:0
+    restart: always
+    env_file:
+      - stack.env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - ./gitea-act-runner:/data:rw # the config file is located at /data/.runner and needs to survive container restarts
+    environment:
+      TZ: "Europe/Berlin"
+      GITEA_INSTANCE_URL: ${GITEA_INSTANCE_URL}
+      GITEA_RUNNER_REGISTRATION_TOKEN: ${GITEA_RUNNER_REGISTRATION_TOKEN}

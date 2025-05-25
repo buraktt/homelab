@@ -1,0 +1,49 @@
+services:
+  karakeep:
+    image: ghcr.io/karakeep-app/karakeep:${KARAKEEP_VERSION:-release}
+    container_name: karakeep
+    restart: unless-stopped
+    user: 0:0
+    volumes:
+      # By default, the data is stored in a docker volume called "data".
+      # If you want to mount a custom directory, change the volume mapping to:
+      # - /path/to/your/directory:/data
+      - ./hoarder-data:/data
+    ports:
+      - 5003:3000
+    env_file:
+      - stack.env
+    environment:
+      MEILI_ADDR: http://meilisearch:7700
+      BROWSER_WEB_URL: http://chrome:9222
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
+      INFERENCE_TEXT_MODEL: ${INFERENCE_TEXT_MODEL}
+      # OPENAI_API_KEY: ...
+      # You almost never want to change the value of the DATA_DIR variable.
+      # If you want to mount a custom directory, change the volume mapping above instead.
+      DATA_DIR: /data # DON'T CHANGE THIS
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+  karakeep-chrome:
+    container_name: karakeep-chrome
+    image: gcr.io/zenika-hub/alpine-chrome:123
+    restart: unless-stopped
+    command:
+      - --no-sandbox
+      - --disable-gpu
+      - --disable-dev-shm-usage
+      - --remote-debugging-address=0.0.0.0
+      - --remote-debugging-port=9222
+      - --hide-scrollbars
+  karakeep-meilisearch:
+    container_name: karakeep-meilisearch
+    image: getmeili/meilisearch:v1.13.3
+    restart: unless-stopped
+    env_file:
+      - stack.env
+    environment:
+      MEILI_NO_ANALYTICS: "true"
+    user: 0:0
+    volumes:
+      - ./meilisearch:/meili_data

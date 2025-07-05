@@ -1,0 +1,43 @@
+services:
+  shairport-sync-alsa:
+    container_name: shairport-sync-alsa
+    image: mikebrady/shairport-sync:classic
+    restart: unless-stopped
+    user: 0:0
+    devices:
+      - /dev/snd:/dev/snd
+    volumes:
+      - /qvo870/shairport-sync/alsa.conf:/etc/shairport-sync.conf:ro
+    networks:
+      macvlan_internal:
+        ipv4_address: 192.168.1.252
+      proxy-network:
+  shairport-sync-echo-pop-lr:
+    container_name: shairport-sync-echo-pop-lr
+    image: mikebrady/shairport-sync:classic
+    user: 0:0
+    restart: unless-stopped
+    volumes:
+      - /qvo870/shairport-sync/echo-pop-lr.conf:/etc/shairport-sync.conf:ro
+    networks:
+      macvlan_internal:
+        ipv4_address: 192.168.1.253
+      proxy-network:
+  shairport-sync-echo-pop-br:
+    container_name: shairport-sync-echo-pop-br
+    image: mikebrady/shairport-sync:classic
+    user: 0:0
+    restart: unless-stopped
+    volumes:
+      - /qvo870/shairport-sync/echo-pop-br.conf:/etc/shairport-sync.conf:ro
+    networks:
+      macvlan_internal:
+        ipv4_address: 192.168.1.251
+      proxy-network:
+networks:
+  macvlan_internal:
+    external:
+      name: macvlan_internal
+  proxy-network:
+    external:
+      name: internal-network

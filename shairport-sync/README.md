@@ -43,8 +43,8 @@ WantedBy=multi-user.target
 
 Useful commands:
 
-bluetoothctl connect 68:F6:3B:D6:87:77
+`bluetoothctl connect 68:F6:3B:D6:87:77`
 
-paplay -vvv ./file_example_WAV_1MG.wav.1 --device=bluez_sink.68_F6_3B_D6_87_77.a2dp_sink
+`paplay -vvv ./file_example_WAV_1MG.wav.1 --device=bluez_sink.68_F6_3B_D6_87_77.a2dp_sink`
 
-pactl list sinks short
+`pactl list sinks short`
